@@ -1,0 +1,10 @@
+<%= @book_club.name %> — Voting Results
+
+Hi <%= @user.name %>,
+
+The voting round has ended. Your book club has chosen:
+
+<%= @winner.title %> by <%= @winner.author %>
+Won with <%= @vote_count %> <%= @vote_count == 1 ? "vote" : "votes" %>.
+
+Happy reading!

@@ -62,6 +62,7 @@ class BooksController < ApplicationController
             synopsis: book.synopsis,
             status: book.status,
             submitted_by: book.submitted_by_id,
+            selected_at: book.selected_at,
             cover_url: book.cover.attached? ? url_for(book.cover) : nil
         }
     end

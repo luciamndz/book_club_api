@@ -59,6 +59,7 @@ class VotingRoundService
         return failure("No winner found") unless winner
 
         winner.update!(status: "selected")
+        winner.update!(selected_at: Time.current)
 
         @book_club.books
             .where(status: "submitted")
@@ -67,7 +68,7 @@ class VotingRoundService
 
         @voting_round.update!(status: "finished", winner: winner)
 
-        # TODO: trigger Sidekiq job for email notification here
+        NotifyVotingResultsJob.perform_later(@voting_round.id)
         success(@voting_round)
     end
 
