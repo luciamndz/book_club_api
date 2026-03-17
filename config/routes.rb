@@ -12,4 +12,26 @@ Rails.application.routes.draw do
   # User routes
   post "/users", to: "users#create"
   get "/users/me", to: "users#me"
+
+  # Book club routes
+  get "/book_clubs", to: "book_clubs#index"
+  post "/book_clubs", to: "book_clubs#create"
+  get "/book_clubs/:id", to: "book_clubs#show"
+  post "/book_clubs/:id/join", to: "book_clubs#join"
+  delete "/book_clubs/:id", to: "book_clubs#destroy"
+
+  # Book routes
+  get "/book_clubs/:book_club_id/books", to: "books#index"
+  post "/book_clubs/:book_club_id/books", to: "books#create"
+  delete "/book_clubs/:book_club_id/books/:id", to: "books#destroy"
+
+  # Voting round routes
+  get   "/book_clubs/:book_club_id/voting_rounds/current",     to: "voting_rounds#current"
+  post  "/book_clubs/:book_club_id/voting_rounds",             to: "voting_rounds#create"
+  patch "/book_clubs/:book_club_id/voting_rounds/:id/open",    to: "voting_rounds#open"
+  patch "/book_clubs/:book_club_id/voting_rounds/:id/finish",  to: "voting_rounds#finish"
+
+  # Vote routes
+  post "/book_clubs/:book_club_id/voting_rounds/:voting_round_id/votes",       to: "votes#create"
+  post "/book_clubs/:book_club_id/voting_rounds/:voting_round_id/submit_book", to: "votes#submit_book"
 end
