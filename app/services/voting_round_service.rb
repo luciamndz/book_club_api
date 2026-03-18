@@ -5,7 +5,6 @@ class VotingRoundService
         @voting_round = voting_round
     end
 
-    # POST /book_clubs/:id/voting_rounds (Admin only)
     def create
         current_book_club_member = find_member
         return failure("You are not a member of this club") unless current_book_club_member
@@ -28,8 +27,26 @@ class VotingRoundService
         end
     end
 
-    # PATCH /book_clubs/:id/voting_rounds/:voting_round_id/open (Admin sets duration and opens the round)
-    def open(params)
+    def show
+        voting_round = @book_club.voting_rounds
+            .where(status: %w[draft active])
+            .includes(votes: :book)
+            .first
+        success(voting_round)
+    end
+
+    def update(params)
+        current_book_club_member = find_member
+        if params[:status] == "active"
+            activate(params)
+        elsif params[:status] == "finished"
+            close
+        else
+            failure("Invalid status")
+        end
+    end
+
+    def activate(params)
         current_book_club_member = find_member
         return failure("Only admins can open voting") unless current_book_club_member&.role_admin?
         return failure("Round is not in draft") unless @voting_round.status_draft?
@@ -49,10 +66,9 @@ class VotingRoundService
         end
     end
 
-    # PATCH /book_clubs/:id/voting_rounds/:voting_round_id/finish (Finishes round and determine winners)
-    def finish
+    def close
         current_book_club_member = find_member
-        return failure("Only admins can finish a voting round") unless current_book_club_member&.role_admin?
+        return failure("Only admins can close a voting round") unless current_book_club_member&.role_admin?
         return failure("Round is not active") unless @voting_round.status_active?
 
         winner = determine_winner

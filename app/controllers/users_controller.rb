@@ -19,16 +19,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def me
-    render json: {
-      user: {
-        id: current_user.id,
-        name: current_user.name,
-        email: current_user.email
-      }
-    }, status: :ok
-  end
-
   private
 
   def user_params

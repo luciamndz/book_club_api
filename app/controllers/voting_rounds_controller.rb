@@ -1,19 +1,16 @@
 class VotingRoundsController < ApplicationController
     before_action :set_book_club
-    before_action :set_voting_round, only: [:open, :finish]
+    before_action :set_voting_round, only: [:update]
 
-    # GET /book_clubs/:book_club_id/voting_rounds/current
-    def current 
-        voting_round = @book_club.voting_rounds
-        .where(status: %w[draft active])
-        .includes(votes: :book)
-        .first
-
-        if voting_round
-            render json: serialize(voting_round), status: :ok
+    def show
+        result = VotingRoundService.new(user: current_user, book_club: @book_club).show
+        if result.success?
+            render json: serialize(result.payload), status: :ok
         else
-            render json: nil, status: :ok
+            render json: { errors: result.errors }, status: :not_found
         end
+        # voting_round = result.payload
+        # render json: voting_round ? serialize(voting_round) : nil, status: :ok
     end
 
     def create
@@ -26,18 +23,12 @@ class VotingRoundsController < ApplicationController
         end
     end
 
-    def open
-        result = VotingRoundService.new(user: current_user, book_club: @book_club, voting_round: @voting_round).open(voting_round_params)
-
-        if result.success?
-            render json: serialize(result.payload), status: :ok
-        else
-            render json: { errors: result.errors }, status: :unprocessable_entity
-        end
-    end
-
-    def finish
-        result = VotingRoundService.new(user: current_user, book_club: @book_club, voting_round: @voting_round).finish
+    def update
+        result = VotingRoundService.new(
+            user: current_user, 
+            book_club: @book_club, 
+            voting_round: @voting_round
+        ).update(voting_round_params)
 
         if result.success?
             render json: serialize(result.payload), status: :ok
@@ -61,7 +52,7 @@ class VotingRoundsController < ApplicationController
     end
 
     def voting_round_params
-        params.require(:voting_round).permit(:starts_at, :ends_at)
+        params.require(:voting_round).permit(:starts_at, :ends_at, :status)
     end
 
     def serialize(voting_round)
