@@ -56,7 +56,6 @@ class BookClubService
             return failure("User is not an admin of this club")
         end
 
-        # The book club can only be deleted when the book club member is deleted as well.
         current_book_club_member.destroy 
 
         success(nil)
