@@ -39,7 +39,7 @@ gem "jwt"
 gem "rack-cors"
 
 # Use Sidekiq for background job processing
-gem "sidekiq", "~> 7.2"
+gem "sidekiq", "~> 8.0"
 gem "connection_pool", "~> 2.4"
 
 group :development do 
