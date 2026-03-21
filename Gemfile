@@ -40,7 +40,7 @@ gem "rack-cors"
 
 # Use Sidekiq for background job processing
 gem "sidekiq", "~> 7.2"
-gem "connection_pool", "~> 2.4"
+gem "connection_pool", "~> 3.0"
 
 group :development do 
   gem "letter_opener"
